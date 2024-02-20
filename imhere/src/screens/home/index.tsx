@@ -1,16 +1,20 @@
 import { View,Text, TextInput, TouchableOpacity, ScrollView, FlatList, Alert } from "react-native";
 import { styles } from "./styles";
 import { Participant } from "../../components/participant";
+import { useState } from "react";
 
 export default function Home() {
-    const participants = ["Alan", "João", "Maria", "José", "Pedro", "Lucas", "Ana", "Paula", "Carlos", "Mariana"];
+    const [participants, setParticipants] = useState<string[]>([]);
+    const  [participantName, setParticipantName] = useState("");
 
+    
     function handleParticipantAdd(){
-        if(participants.includes("Alan")){
+        if(participants.includes(participantName)){
             return Alert.alert("Erro", "Participante já cadastrado");
         }
 
-        console.log("Adicionar participante");
+        setParticipants([...participants, participantName]);
+        setParticipantName("");
     }
 
     function handleParticipantRemove(name: string){
@@ -22,15 +26,9 @@ export default function Home() {
             {
                 text: "Remover",
                 style: "destructive",
-                onPress: () => removeParticipant(name)
+                onPress: () => participants.splice(participants.indexOf(name), 1)
             }
         ]);
-
-        console.log("Remover participante");
-    }
-
-    function removeParticipant(name: string){
-        console.log("Remover participante", name);
 
         Alert.alert("Sucesso", `Participante ${name} removido com sucesso`);
     }
@@ -44,7 +42,9 @@ export default function Home() {
                 <TextInput 
                     style={styles.input} 
                     placeholder="Nome do Participante"
-                    placeholderTextColor="#6b6b6b"    
+                    placeholderTextColor="#6b6b6b"
+                    onChangeText={text => setParticipantName(text)}  
+                    value={participantName}  
                 />
 
                 <TouchableOpacity style={styles.button} onPress={handleParticipantAdd}>
